@@ -3,11 +3,11 @@ var auth = require('../lib/auth');
 var sinon = require('sinon');
 var _ = require('lodash');
 
-describe('auth', function() {
+describe('auth', function () {
 
-  describe('isAuthenticated', function() {
+  describe('isAuthenticated', function () {
 
-    it('should resolve if authObject is populated', function(done) {
+    it('should resolve if authObject is populated', function (done) {
       var host = {
         authObject: {
           accessToken: 'adbcdegt'
@@ -22,7 +22,7 @@ describe('auth', function() {
       });
     });
 
-    it('should reject if authObject is populated', function(done) {
+    it('should reject if authObject is populated', function (done) {
       var host = {
         authObject: void 0,
         refreshAuthFromStore: sinon.spy(function (callback) {
@@ -35,7 +35,7 @@ describe('auth', function() {
       });
     });
 
-    it('should call _hasClientSideRedirect and reject if no authObject exists', function(done) {
+    it('should call _hasClientSideRedirect and reject if no authObject exists', function (done) {
       var host = {
         refreshAuthFromStore: sinon.spy(function (callback) {
           callback()
@@ -50,7 +50,7 @@ describe('auth', function() {
       });
     });
 
-    it('should call refreshAuthFromStore if a callback is provided', function() {
+    it('should call refreshAuthFromStore if a callback is provided', function () {
       var host = {
         refreshAuthFromStore: sinon.stub().returns(false)
       };
@@ -63,13 +63,14 @@ describe('auth', function() {
 
   });
 
-  describe('getAccessToken', function() {
+  describe('getAccessToken', function () {
 
-    it('should call _authenticate with the right responseData', function() {
+    it('should call _authenticate with the right responseData', function () {
       var host = {
         authType: 'server',
         _authenticate: sinon.stub(),
-        _onAccessTokenAcquired: function() {}
+        _onAccessTokenAcquired: function () {
+        }
       };
       var authCode = 'e123';
       var redirectURL = 'https://www.myapp.com/oauth';
@@ -84,7 +85,7 @@ describe('auth', function() {
       expect(host._authenticate.getCall(0).args[0]).toEqual(expectedResponseData);
     });
 
-    it('should throw an exception if authType is not server', function() {
+    it('should throw an exception if authType is not server', function () {
       var host = {
         authType: 'client'
       };
@@ -102,9 +103,9 @@ describe('auth', function() {
 
   });
 
-  describe('setAccessToken', function() {
+  describe('setAccessToken', function () {
 
-    it('should set the OAuth object', function() {
+    it('should set the OAuth object', function () {
       var host = {};
 
       var responseData = {
@@ -127,24 +128,24 @@ describe('auth', function() {
 
   });
 
-  describe('getAuthorizationURL', function() {
+  describe('getAuthorizationURL', function () {
 
-    it('should return the correct authorization URL for the client auth', function() {
+    it('should return the correct authorization URL for the client auth', function () {
       var redirectURL = 'https://www.myapp.com/oauth';
       var host = {
         apiURL: 'https://api.podio.com',
         authType: 'client',
         clientId: 123
       };
-      
+
       var expectedURL = 'https://podio.com/oauth/authorize?client_id=123&redirect_uri=https%3A%2F%2Fwww.myapp.com%2Foauth&response_type=token';
-      
+
       expect(auth.getAuthorizationURL.call(host, redirectURL)).toBe(expectedURL);
     });
 
-    it('should return the correct authorization URL for the server auth', function() {
+    it('should return the correct authorization URL for the server auth', function () {
       var redirectURL = 'https://www.myapp.com/oauth';
-      
+
       var host = {
         apiURL: 'https://podio.com',
         authType: 'server',
@@ -155,7 +156,7 @@ describe('auth', function() {
       expect(auth.getAuthorizationURL.call(host, redirectURL)).toBe(expectedURL);
     });
 
-    it('should throw an error when retrieving an auth URL for password auth', function() {
+    it('should throw an error when retrieving an auth URL for password auth', function () {
       var redirectURL = 'https://www.myapp.com/oauth';
       var host = {
         authType: 'password',
@@ -168,9 +169,9 @@ describe('auth', function() {
 
   });
 
-  describe('authenticateWithCredentialsForOffering', function() {
+  describe('authenticateWithCredentialsForOffering', function () {
 
-    it('should call authenticate with credentials and the correct grant type', function() {
+    it('should call authenticate with credentials and the correct grant type', function () {
       var host = {
         _authenticate: sinon.stub()
       };
@@ -189,7 +190,7 @@ describe('auth', function() {
       expect(_.isFunction(host._authenticate.getCall(0).args[1])).toBe(true);
     });
 
-    it('should call onAccessTokenAcquired with correct parameters when authentication succeeds', function() {
+    it('should call onAccessTokenAcquired with correct parameters when authentication succeeds', function () {
       var responseData = {};
       var host = {
         _authenticate: sinon.stub().callsArgWith(1, null, responseData),
@@ -197,7 +198,8 @@ describe('auth', function() {
       };
       var username = 'user@podio.com';
       var password = 'password';
-      var callback = function() {};
+      var callback = function () {
+      };
 
       auth.authenticateWithCredentialsForOffering.call(host, username, password, null, callback);
 
@@ -207,9 +209,9 @@ describe('auth', function() {
 
   });
 
-  describe('authenticateWithApp', function() {
+  describe('authenticateWithApp', function () {
 
-    it('should call _authenticate with appId, appToken and correct grand type', function() {
+    it('should call _authenticate with appId, appToken and correct grand type', function () {
       var host = {
         _authenticate: sinon.stub()
       };
@@ -225,9 +227,10 @@ describe('auth', function() {
       expect(host._authenticate.getCall(0).args[0]).toEqual(expectedData);
     });
 
-    it('should call _onAccessTokenAcquired with responseData and callback when auth is completed', function() {
-      var authData = { access_token: 'a321' };
-      var callback = function() {};
+    it('should call _onAccessTokenAcquired with responseData and callback when auth is completed', function () {
+      var authData = {access_token: 'a321'};
+      var callback = function () {
+      };
       var host = {
         _authenticate: sinon.stub().callsArgWith(1, null, authData),
         _onAccessTokenAcquired: sinon.stub()
@@ -239,7 +242,7 @@ describe('auth', function() {
       expect(host._onAccessTokenAcquired.calledWithExactly(authData, callback)).toBe(true);
     });
 
-    it('should not call _onAccessTokenAcquired when auth failed and call the callback', function() {
+    it('should not call _onAccessTokenAcquired when auth failed and call the callback', function () {
       var callback = sinon.stub();
       var err = new Error();
       var host = {
@@ -256,14 +259,14 @@ describe('auth', function() {
 
   });
 
-  describe('_getAuthFromStore', function() {
+  describe('_getAuthFromStore', function () {
 
-    it('should get auth data from the session store and store it in memory', function() {
-      var authObject = { accessToken: 'e123' };
+    it('should get auth data from the session store and store it in memory', function () {
+      var authObject = {accessToken: 'e123'};
       var callback = sinon.stub();
 
       var host = {
-        sessionStore: { get: sinon.stub().callsArgWith(1, authObject) },
+        sessionStore: {get: sinon.stub().callsArgWith(1, authObject)},
         authType: 'client'
       };
 
@@ -276,10 +279,10 @@ describe('auth', function() {
       expect(callback.calledOnce).toBe(true);
     });
 
-    it('should call the callback function if provided', function() {
-      var authObject = { accessToken: 'e123' };
+    it('should call the callback function if provided', function () {
+      var authObject = {accessToken: 'e123'};
       var host = {
-        sessionStore: { get: sinon.stub().callsArgWith(1, authObject) },
+        sessionStore: {get: sinon.stub().callsArgWith(1, authObject)},
         authType: 'client'
       };
       var callback = sinon.stub();
@@ -290,11 +293,11 @@ describe('auth', function() {
       expect(callback.calledOnce).toBe(true);
     });
 
-    it('should not call callback if not specified and get auth data from the session store and store it in memory', function() {
-      var authObject = { accessToken: 'e123' };
+    it('should not call callback if not specified and get auth data from the session store and store it in memory', function () {
+      var authObject = {accessToken: 'e123'};
 
       var host = {
-        sessionStore: { get: sinon.stub().callsArgWith(1, authObject) },
+        sessionStore: {get: sinon.stub().callsArgWith(1, authObject)},
         authType: 'client'
       };
 
@@ -308,9 +311,9 @@ describe('auth', function() {
 
   });
 
-  describe('_hasClientSideRedirect', function() {
+  describe('_hasClientSideRedirect', function () {
 
-    it('should return false for non client auth', function() {
+    it('should return false for non client auth', function () {
       var host = {
         authType: 'server'
       };
@@ -318,8 +321,8 @@ describe('auth', function() {
       expect(auth._hasClientSideRedirect.call(host)).toBe(false);
     });
 
-    it('should save access token if it is present in the hash fragment and return true', function() {
-      var params = { access_token: 123 };
+    it('should save access token if it is present in the hash fragment and return true', function () {
+      var params = {access_token: 123};
       var utils = {
         _getHashParams: sinon.stub().returns(params)
       };
@@ -334,7 +337,7 @@ describe('auth', function() {
       expect(host._onAccessTokenAcquired.getCall(0).args[0]).toEqual(params);
     });
 
-    it('should not attempt to save the token and return false if no hash parameters are present in the client auth', function() {
+    it('should not attempt to save the token and return false if no hash parameters are present in the client auth', function () {
       var utils = {
         _getHashParams: sinon.stub().returns({})
       };
@@ -350,7 +353,7 @@ describe('auth', function() {
 
   });
 
-  describe('_onAccessTokenAcquired', function() {
+  describe('_onAccessTokenAcquired', function () {
 
     var responseData = {
       access_token: 'e123',
@@ -365,15 +368,16 @@ describe('auth', function() {
       ref: {}
     };
 
-    it('should set an OAuth object correctly', function() {
+    it('should set an OAuth object correctly', function () {
       var host = {};
 
-      auth._onAccessTokenAcquired.call(host, responseData, function() {});
+      auth._onAccessTokenAcquired.call(host, responseData, function () {
+      });
 
       expect(_.isMatch(host.authObject, oAuthObject)).toBe(true);
     });
 
-    it('should save an authObject in the session store and provide a callback', function() {
+    it('should save an authObject in the session store and provide a callback', function () {
       var host = {
         sessionStore: {
           set: sinon.stub()
@@ -381,7 +385,8 @@ describe('auth', function() {
         authType: 'client'
       };
 
-      auth._onAccessTokenAcquired.call(host, responseData, function() {});
+      auth._onAccessTokenAcquired.call(host, responseData, function () {
+      });
 
       expect(host.sessionStore.set.calledOnce).toBe(true);
       expect(_.isMatch(host.sessionStore.set.getCall(0).args[0], oAuthObject)).toBe(true);
@@ -389,7 +394,7 @@ describe('auth', function() {
       expect(_.isFunction(host.sessionStore.set.getCall(0).args[2])).toBe(true);
     });
 
-    it('should call the callback if no session store is provided', function() {
+    it('should call the callback if no session store is provided', function () {
       var callback = sinon.stub();
       var host = {};
 
@@ -400,7 +405,7 @@ describe('auth', function() {
       expect(callback.getCall(0).args[1]).toEqual(responseData);
     });
 
-    it('should not fail trying to call the callback if none is provided', function() {
+    it('should not fail trying to call the callback if none is provided', function () {
       var host = {};
 
       auth._onAccessTokenAcquired.call(host, responseData);
@@ -410,13 +415,13 @@ describe('auth', function() {
 
   });
 
-  describe('_clearAuthentication', function() {
+  describe('_clearAuthentication', function () {
 
-    it('should remove the authObject and call sessionStore with an empty auth object', function() {
+    it('should remove the authObject and call sessionStore with an empty auth object', function () {
       var host = {
         authObject: {},
         authType: 'client',
-        sessionStore: { set: sinon.stub() }
+        sessionStore: {set: sinon.stub()}
       };
 
       auth._clearAuthentication.call(host);
@@ -428,16 +433,16 @@ describe('auth', function() {
 
   });
 
-  describe('_authenticate', function() {
+  describe('_authenticate', function () {
 
-    it('should construct the request data and url correctly', function() {
+    it('should construct the request data and url correctly', function () {
       var host = {
         apiURL: 'http://sub.podio.com',
         clientId: 123,
         clientSecret: 'secret',
         _authRequest: sinon.stub()
       };
-      var requestData = { grant_type: 'authorization_code' };
+      var requestData = {grant_type: 'authorization_code'};
       var expectedRequestData = {
         grant_type: 'authorization_code',
         client_id: 123,
@@ -452,22 +457,22 @@ describe('auth', function() {
     });
   });
 
-  describe('_onAuthResponse', function() {
+  describe('_onAuthResponse', function () {
 
-    it('should call the callback with the body if response is ok', function() {
+    it('should call the callback with the body if response is ok', function () {
       var callback = sinon.stub();
       var url = 'https://api.podio.com:443/oauth/token';
 
-      auth._onAuthResponse(callback, 'authorization_code', url, null, { ok: true, body: 'body' });
+      auth._onAuthResponse(callback, 'authorization_code', url, null, {ok: true, body: 'body'});
 
       expect(callback.calledOnce).toBe(true);
       expect(callback.calledWithExactly(null, 'body')).toBe(true);
     });
 
-    it('should raise an exception if authentication failed', function() {
+    it('should raise an exception if authentication failed', function () {
       var url = 'https://api.podio.com:443/oauth/token';
       var errorMessage = 'Authentication for authorization_code failed. Reason: 42';
-      var PodioAuthorizationError = function(message, status, url) {
+      var PodioAuthorizationError = function (message, status, url) {
         this.message = message;
         this.status = status;
         this.url = url;
@@ -476,7 +481,7 @@ describe('auth', function() {
 
       var response = {
         ok: false,
-        body: { error_description: '42' },
+        body: {error_description: '42'},
         status: 401
       };
 
@@ -489,9 +494,9 @@ describe('auth', function() {
 
   });
 
-  describe('_refreshToken', function() {
+  describe('_refreshToken', function () {
 
-    it('should call authenticate with the refresh token, clear previous authentication', function() {
+    it('should call authenticate with the refresh token, clear previous authentication', function () {
       var host = {
         authObject: {
           refreshToken: 123
@@ -511,14 +516,15 @@ describe('auth', function() {
       expect(host._clearAuthentication.calledOnce).toBe(true);
     });
 
-    it('should call _onAccessTokenAcquired when authentication is done', function() {
-      var callbackFn = function() {};
-      var responseData = { accessToken: 123 };
+    it('should call _onAccessTokenAcquired when authentication is done', function () {
+      var callbackFn = function () {
+      };
+      var responseData = {accessToken: 123};
       var host = {
         authObject: {
           refreshToken: 123
         },
-        _authenticate: function(requestData, callback) {
+        _authenticate: function (requestData, callback) {
           callback(null, responseData);
         },
         _onAccessTokenAcquired: sinon.stub(),
@@ -531,11 +537,13 @@ describe('auth', function() {
       expect(host._onAccessTokenAcquired.calledWithExactly(responseData, callbackFn)).toBe(true);
     });
 
-    it('should call an onTokenWillRefresh callback if present and client side authentication is chosen', function() {
-      var callbackFn = function() {};
+    it('should call an onTokenWillRefresh callback if present and client side authentication is chosen', function () {
+      var callbackFn = function () {
+      };
       var host = {
         authObject: {},
-        _clearAuthentication: function() {},
+        _clearAuthentication: function () {
+        },
         authType: 'client',
         onTokenWillRefresh: sinon.stub(),
         _onAccessTokenAcquired: sinon.stub(),

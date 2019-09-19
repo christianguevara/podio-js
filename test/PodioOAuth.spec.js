@@ -1,28 +1,28 @@
 var OAuth = require('../lib/PodioOAuth');
 
-describe('PodioOAuth', function() {
+describe('PodioOAuth', function () {
 
-  describe('instantiation', function() {
+  describe('instantiation', function () {
 
-    it('should throw error when `access_token` is not set', function() {
+    it('should throw error when `access_token` is not set', function () {
       expect(function () {
         new OAuth(void 0, 'refresh_token', 'expires_in');
       }).toThrow(new Error('Access token is missing'));
     });
 
-    it('should throw error when `refresh_token` is not set', function() {
+    it('should throw error when `refresh_token` is not set', function () {
       expect(function () {
         new OAuth('access_token', void 0, 'expires_in');
       }).toThrow(new Error('Refresh token is missing'));
     });
 
-    it('should throw error when `expires_in` is not set', function() {
+    it('should throw error when `expires_in` is not set', function () {
       expect(function () {
         new OAuth('access_token', 'refresh_token', void 0);
       }).toThrow(new Error('Expiration timestamp is missing'));
     });
 
-    it('should set instance properties', function() {
+    it('should set instance properties', function () {
       var args = {
         accessToken: 'a123',
         refreshToken: 'b123',

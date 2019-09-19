@@ -6,15 +6,15 @@ var _ = require('lodash');
 var Promise = require('es6-promise');
 Promise = Promise.Promise; // unwrap
 
-describe('transport', function() {
+describe('transport', function () {
 
-  describe('_addRequestData', function() {
+  describe('_addRequestData', function () {
 
-    it('should attach data as query for a get request and return the request object', function() {
+    it('should attach data as query for a get request and return the request object', function () {
       var newReq = {};
-      var data = { authToken: 123 };
+      var data = {authToken: 123};
       var req = {
-        query: sinon.spy(function(data) {
+        query: sinon.spy(function (data) {
           return newReq;
         })
       };
@@ -26,8 +26,8 @@ describe('transport', function() {
       expect(result).toEqual(newReq);
     });
 
-    it('should attach data as body for a post request', function() {
-      var data = { authToken: 123 };
+    it('should attach data as body for a post request', function () {
+      var data = {authToken: 123};
       var req = {
         send: sinon.stub()
       };
@@ -38,8 +38,8 @@ describe('transport', function() {
       expect(req.send.calledWithExactly(data)).toBe(true);
     });
 
-    it('should attach data as body for a put request', function() {
-      var data = { authToken: 123 };
+    it('should attach data as body for a put request', function () {
+      var data = {authToken: 123};
       var req = {
         send: sinon.stub()
       };
@@ -52,9 +52,9 @@ describe('transport', function() {
 
   });
 
-  describe('_addHeaders', function() {
+  describe('_addHeaders', function () {
 
-    it('should set the auth header on the request object and return it', function() {
+    it('should set the auth header on the request object and return it', function () {
       var newReq = {};
       var host = {
         authObject: {
@@ -74,14 +74,14 @@ describe('transport', function() {
 
   });
 
-  describe('_addCORS', function() {
+  describe('_addCORS', function () {
 
-    it('should enable cookies for cross domain requests', function() {
+    it('should enable cookies for cross domain requests', function () {
       var host = {
         authType: 'client'
       };
       var req = {
-        withCredentials: sinon.spy(function() {
+        withCredentials: sinon.spy(function () {
           return req;
         })
       };
@@ -90,7 +90,7 @@ describe('transport', function() {
       expect(req.withCredentials.calledOnce).toBe(true);
     });
 
-    it('should not enable cookies if no client auth is used', function() {
+    it('should not enable cookies if no client auth is used', function () {
       var host = {
         authType: 'server'
       };
@@ -104,9 +104,9 @@ describe('transport', function() {
 
   });
 
-  describe('_setOptions', function() {
+  describe('_setOptions', function () {
 
-    it('should set the application/x-www-form-urlencoded content type', function() {
+    it('should set the application/x-www-form-urlencoded content type', function () {
       var req = {
         type: sinon.stub()
       };
@@ -120,7 +120,7 @@ describe('transport', function() {
       expect(req.type.calledWithExactly('form')).toBe(true);
     });
 
-    it('should not call type on the request object if no type option is passed', function() {
+    it('should not call type on the request object if no type option is passed', function () {
       var req = {
         type: sinon.stub()
       };
@@ -145,8 +145,8 @@ describe('transport', function() {
       transport.clientSecret = 'abc';
 
       var basicAuth = 'Basic ' +
-                      new Buffer.from(transport.clientId + ':' +
-                      transport.clientSecret).toString('base64');
+        new Buffer.from(transport.clientId + ':' +
+          transport.clientSecret).toString('base64');
 
       transport._setOptions(options, req);
 
@@ -155,9 +155,9 @@ describe('transport', function() {
 
   });
 
-  describe('_onResponse', function() {
+  describe('_onResponse', function () {
 
-    it('should call resolve and callback if response was a success', function() {
+    it('should call resolve and callback if response was a success', function () {
       var options = {
         resolve: sinon.stub(),
         reject: sinon.stub()
@@ -174,15 +174,15 @@ describe('transport', function() {
       expect(options.resolve.calledWithExactly(res.body)).toBe(true);
     });
 
-    it('should call reject and handle the error if response was a failure different from HTTP 401', function() {
+    it('should call reject and handle the error if response was a failure different from HTTP 401', function () {
       var options = {
         reject: sinon.stub(),
-        requestParams: { url: 'http://url' }
+        requestParams: {url: 'http://url'}
       };
 
       var res = {
         ok: false,
-        body: { error_description: 'Error occured' },
+        body: {error_description: 'Error occured'},
         status: 404,
         err: {}
       };
@@ -195,7 +195,7 @@ describe('transport', function() {
       expect(options.reject.calledWithExactly(expectedError)).toBe(true);
     });
 
-    it('should try to refresh token when the token expires with an HTTP 401', function() {
+    it('should try to refresh token when the token expires with an HTTP 401', function () {
       var response = {
         status: 401,
         body: {
@@ -223,7 +223,8 @@ describe('transport', function() {
           refreshToken: 'abc1234'
         },
         _getAuth: sinon.stub().returns(auth),
-        _onTokenRefreshed: sinon.stub().returns(new Promise(function(){})),
+        _onTokenRefreshed: sinon.stub().returns(new Promise(function () {
+        })),
         _handleTransportError: sinon.spy(function () {
           auth._clearAuthentication();
 
@@ -242,7 +243,7 @@ describe('transport', function() {
       expect(host.afterTokenRefreshed.calledOnce).toBe(true);
     });
 
-    it('should handle the error if response was a HTTP 401 but not a token expiration', function() {
+    it('should handle the error if response was a HTTP 401 but not a token expiration', function () {
       var res = {
         ok: false,
         body: {},
@@ -263,19 +264,20 @@ describe('transport', function() {
       expect(options.reject.calledOnce).toBe(true);
     });
 
-    it('should handle the error if response is a HTTP 401 with an expired token error, but the refresh token is missing', function() {
+    it('should handle the error if response is a HTTP 401 with an expired token error, but the refresh token is missing', function () {
       var res = {
         ok: false,
-        body: { error: 'invalid_token' },
+        body: {error: 'invalid_token'},
         status: 401
       };
       var options = {
         requestParams: {},
-        reject: function() {}
+        reject: function () {
+        }
       };
       var host = {
         _handleTransportError: sinon.stub(),
-        authObject: { authToken: 123 }
+        authObject: {authToken: 123}
       };
 
       transport._onResponse.call(host, options, new PodioErrors.PodioAuthorizationError(), res);
@@ -285,24 +287,24 @@ describe('transport', function() {
 
   });
 
-  describe('_getRequestURI', function() {
+  describe('_getRequestURI', function () {
 
     var host;
 
-    beforeEach(function() {
+    beforeEach(function () {
       host = {
         apiURL: 'https://api.podio.com:443'
       };
     });
 
-    it('should return the correct url with only path provided', function() {
+    it('should return the correct url with only path provided', function () {
       var path = '/test';
       var result = transport._getRequestURI.call(host, path);
 
       expect(result).toEqual('https://api.podio.com:443/test');
     });
 
-    it('should return the correct url with both path and query provided', function() {
+    it('should return the correct url with both path and query provided', function () {
       var path = '/test?param=true';
       var result = transport._getRequestURI.call(host, path);
 
@@ -311,13 +313,15 @@ describe('transport', function() {
 
   });
 
-  describe('request', function() {
+  describe('request', function () {
 
     var request, host, auth;
 
-    beforeEach(function() {
+    beforeEach(function () {
       request = {
-        get: sinon.spy(function() { return request; }),
+        get: sinon.spy(function () {
+          return request;
+        }),
         end: sinon.stub()
       };
       auth = {
@@ -328,50 +332,52 @@ describe('transport', function() {
         _getAuth: sinon.stub().returns(auth),
         _getRequestObject: sinon.stub().returns(request),
         _formatMethod: sinon.stub().returns('get'),
-        _addRequestData: sinon.spy(function(data, method, req) {
+        _addRequestData: sinon.spy(function (data, method, req) {
           req.requestData = {};
 
           return req;
         }),
-        _addHeaders: sinon.spy(function(req) {
+        _addHeaders: sinon.spy(function (req) {
           req.headers = {};
 
           return req;
         }),
-        _addCORS: sinon.spy(function(req) {
+        _addCORS: sinon.spy(function (req) {
           req.cors = {};
 
           return req;
         }),
-        _setOptions: sinon.spy(function(options, req) {
+        _setOptions: sinon.spy(function (options, req) {
           req.options = {};
 
           return req;
         }),
         _getPromise: sinon.stub().callsArg(1),
-        _onResponse: function() {},
+        _onResponse: function () {
+        },
         apiURL: 'https://api.podio.com:443'
       }
     });
 
-    afterEach(function() {
+    afterEach(function () {
       host = request = null;
     });
 
-    it('should call the correct method on the request object with a correct URL', function() {
+    it('should call the correct method on the request object with a correct URL', function () {
       var path = '/test';
       var url = 'https://api.podio.com:443/test';
 
       host._getRequestURI = sinon.stub().returns(url);
 
-      transport.request.call(host, 'GET', path, null, function(responseData) {});
+      transport.request.call(host, 'GET', path, null, function (responseData) {
+      });
 
       expect(host._getRequestURI.calledOnce).toBe(true);
       expect(host._getRequestURI.calledWithExactly(path)).toBe(true);
     });
 
-    it('should throw an exception if authentication has not been performed before', function(done) {
-      var PodioForbiddenError = function(message, status, url) {
+    it('should throw an exception if authentication has not been performed before', function (done) {
+      var PodioForbiddenError = function (message, status, url) {
         this.message = message;
         this.status = status;
         this.url = url;
@@ -380,15 +386,16 @@ describe('transport', function() {
 
       auth.isAuthenticated = sinon.stub().returns(false);
 
-      transport.request.call(host, 'get', '/test').then(function(){}, function (err) {
+      transport.request.call(host, 'get', '/test').then(function () {
+      }, function (err) {
         expect(err).toEqual(new PodioForbiddenError('Authentication has not been performed'));
 
         done();
       });
     });
 
-    it('should call addRequestData, addHeaders, addCORS, setOptions with the request object and let them augment it', function() {
-      var data = { data: true };
+    it('should call addRequestData, addHeaders, addCORS, setOptions with the request object and let them augment it', function () {
+      var data = {data: true};
 
       host.authObject = {};
       transport.request.call(host, 'GET', '/test', data);
@@ -401,10 +408,10 @@ describe('transport', function() {
       expect(request.end.getCall(0).thisValue).toEqual(request); // request has been augmented at this point
     });
 
-    it('should call only addRequestData and setOptions with the request object when basicAuth is true and let them augment it', function() {
-      var data = { data: true };
+    it('should call only addRequestData and setOptions with the request object when basicAuth is true and let them augment it', function () {
+      var data = {data: true};
 
-      transport.request.call(host, 'GET', '/test', data, { basicAuth: true });
+      transport.request.call(host, 'GET', '/test', data, {basicAuth: true});
 
       expect(host._addRequestData.calledOnce).toBe(true);
       expect(host._addRequestData.calledWith(data, 'get')).toBe(true);
@@ -414,24 +421,25 @@ describe('transport', function() {
       expect(request.end.getCall(0).thisValue).toEqual(request); // request has been augmented at this point
     });
 
-    it('should format the method passed', function() {
+    it('should format the method passed', function () {
       host.authObject = {};
-      transport.request.call(host, 'GET', '/test', null, function(responseData) {});
+      transport.request.call(host, 'GET', '/test', null, function (responseData) {
+      });
 
       expect(host._formatMethod.calledOnce).toBe(true);
     });
 
   });
 
-  describe('uploadFile', function() {
+  describe('uploadFile', function () {
 
     function getFullMocks() {
       var host;
       var req = {
         end: sinon.stub()
       };
-      var field = { field: sinon.stub().returns(req) };
-      var attach = { attach: sinon.stub().returns(field)};
+      var field = {field: sinon.stub().returns(req)};
+      var attach = {attach: sinon.stub().returns(field)};
 
       req.post = sinon.stub().returns(attach);
 
@@ -452,20 +460,21 @@ describe('transport', function() {
       };
     }
 
-    it('should raise an exception when called on the client', function(done) {
+    it('should raise an exception when called on the client', function (done) {
       var host = {
         authType: 'client',
         apiURL: 'https://api.podio.com:443'
       };
 
-      transport.uploadFile.call(host).then(function () {}, function (err) {
+      transport.uploadFile.call(host).then(function () {
+      }, function (err) {
         expect(err).toEqual(new PodioErrors.PodioError('File uploads are only supported on the server right now.'));
 
         done();
       });
     });
 
-    it('should assemble the url correctly', function() {
+    it('should assemble the url correctly', function () {
       var mocks = getFullMocks();
 
       transport.uploadFile.call(mocks.host);
@@ -474,7 +483,7 @@ describe('transport', function() {
       expect(mocks.req.post.calledWithExactly('https://api.podio.com:443/file'));
     });
 
-    it('it should assemble the body correctly', function() {
+    it('it should assemble the body correctly', function () {
       var mocks = getFullMocks();
       var filePath = 'tmp/image.png';
       var fileName = 'image.png';
@@ -487,7 +496,7 @@ describe('transport', function() {
       expect(mocks.field.field.calledWithExactly('filename', fileName)).toBe(true);
     });
 
-    it('should add auth and CORS headers to the request', function() {
+    it('should add auth and CORS headers to the request', function () {
       var mocks = getFullMocks();
 
       transport.uploadFile.call(mocks.host);
@@ -500,9 +509,9 @@ describe('transport', function() {
 
   });
 
-  describe('_onTokenRefreshed', function() {
+  describe('_onTokenRefreshed', function () {
 
-    it('should repeat a failed generic request with old parameters passed as options', function() {
+    it('should repeat a failed generic request with old parameters passed as options', function () {
       var host = {
         request: sinon.stub(),
         uploadFile: sinon.stub()
@@ -522,7 +531,7 @@ describe('transport', function() {
       expect(host.uploadFile.called).toBe(false);
     });
 
-    it('should repeat a file upload with old parameters passed as options', function() {
+    it('should repeat a file upload with old parameters passed as options', function () {
       var host = {
         request: sinon.stub(),
         uploadFile: sinon.stub()
@@ -543,19 +552,19 @@ describe('transport', function() {
 
   });
 
-  describe('_handleTransportError', function() {
+  describe('_handleTransportError', function () {
 
-    beforeEach(function() {
+    beforeEach(function () {
       sinon.spy(transport, '_handleTransportError');
     });
 
-    afterEach(function() {
+    afterEach(function () {
       transport._handleTransportError.restore();
     });
 
-    it('should throw a PodioBadRequestError with the right parameters', function() {
+    it('should throw a PodioBadRequestError with the right parameters', function () {
       var options = {
-        requestParams: { url: 'https://example.com' }
+        requestParams: {url: 'https://example.com'}
       };
       var response = {
         body: {},
@@ -566,9 +575,9 @@ describe('transport', function() {
       expect(transport._handleTransportError(options, response)).toEqual(expectedError);
     });
 
-    it('should throw a PodioAuthorizationError with the right parameters and clear the authentication', function() {
+    it('should throw a PodioAuthorizationError with the right parameters and clear the authentication', function () {
       var options = {
-        requestParams: { url: 'https://example.com' }
+        requestParams: {url: 'https://example.com'}
       };
       var response = {
         body: {},
@@ -586,9 +595,9 @@ describe('transport', function() {
       expect(auth._clearAuthentication.calledOnce).toBe(true);
     });
 
-    it('should throw a PodioForbiddenError with the right parameters', function() {
+    it('should throw a PodioForbiddenError with the right parameters', function () {
       var options = {
-        requestParams: { url: 'https://example.com' }
+        requestParams: {url: 'https://example.com'}
       };
       var response = {
         body: {},
@@ -599,9 +608,9 @@ describe('transport', function() {
       expect(transport._handleTransportError(options, response)).toEqual(expectedError);
     });
 
-    it('should throw a PodioNotFoundError with the right parameters', function() {
+    it('should throw a PodioNotFoundError with the right parameters', function () {
       var options = {
-        requestParams: { url: 'https://example.com' }
+        requestParams: {url: 'https://example.com'}
       };
       var response = {
         body: {},
@@ -612,9 +621,9 @@ describe('transport', function() {
       expect(transport._handleTransportError(options, response)).toEqual(expectedError);
     });
 
-    it('should throw a PodioConflictError with the right parameters', function() {
+    it('should throw a PodioConflictError with the right parameters', function () {
       var options = {
-        requestParams: { url: 'https://example.com' }
+        requestParams: {url: 'https://example.com'}
       };
       var response = {
         body: {},
@@ -625,9 +634,9 @@ describe('transport', function() {
       expect(transport._handleTransportError(options, response)).toEqual(expectedError);
     });
 
-    it('should throw a PodioGoneError with the right parameters', function() {
+    it('should throw a PodioGoneError with the right parameters', function () {
       var options = {
-        requestParams: { url: 'https://example.com' }
+        requestParams: {url: 'https://example.com'}
       };
       var response = {
         body: {},
@@ -638,9 +647,9 @@ describe('transport', function() {
       expect(transport._handleTransportError(options, response)).toEqual(expectedError);
     });
 
-    it('should throw a PodioRateLimitError with the right parameters', function() {
+    it('should throw a PodioRateLimitError with the right parameters', function () {
       var options = {
-        requestParams: { url: 'https://example.com' }
+        requestParams: {url: 'https://example.com'}
       };
       var response = {
         body: {},
@@ -651,9 +660,9 @@ describe('transport', function() {
       expect(transport._handleTransportError(options, response)).toEqual(expectedError);
     });
 
-    it('should throw a PodioServerError with the right parameters', function() {
+    it('should throw a PodioServerError with the right parameters', function () {
       var options = {
-        requestParams: { url: 'https://example.com' }
+        requestParams: {url: 'https://example.com'}
       };
       var response = {
         body: {},
@@ -664,9 +673,9 @@ describe('transport', function() {
       expect(transport._handleTransportError(options, response)).toEqual(expectedError);
     });
 
-    it('should throw a PodioUnavailableError 502 with the right parameters', function() {
+    it('should throw a PodioUnavailableError 502 with the right parameters', function () {
       var options = {
-        requestParams: { url: 'https://example.com' }
+        requestParams: {url: 'https://example.com'}
       };
       var response = {
         body: {},
@@ -677,9 +686,9 @@ describe('transport', function() {
       expect(transport._handleTransportError(options, response)).toEqual(expectedError);
     });
 
-    it('should throw a PodioUnavailableError 503 with the right parameters', function() {
+    it('should throw a PodioUnavailableError 503 with the right parameters', function () {
       var options = {
-        requestParams: { url: 'https://example.com' }
+        requestParams: {url: 'https://example.com'}
       };
       var response = {
         body: {},
@@ -690,9 +699,9 @@ describe('transport', function() {
       expect(transport._handleTransportError(options, response)).toEqual(expectedError);
     });
 
-    it('should throw a PodioUnavailableError 504 with the right parameters', function() {
+    it('should throw a PodioUnavailableError 504 with the right parameters', function () {
       var options = {
-        requestParams: { url: 'https://example.com' }
+        requestParams: {url: 'https://example.com'}
       };
       var response = {
         body: {},
@@ -703,9 +712,9 @@ describe('transport', function() {
       expect(transport._handleTransportError(options, response)).toEqual(expectedError);
     });
 
-    it('should throw a PodioError with the right parameters', function() {
+    it('should throw a PodioError with the right parameters', function () {
       var options = {
-        requestParams: { url: 'https://example.com' }
+        requestParams: {url: 'https://example.com'}
       };
       var response = {
         body: {}
@@ -717,15 +726,15 @@ describe('transport', function() {
 
   });
 
-  describe('_formatMethod', function() {
+  describe('_formatMethod', function () {
 
-    it('should transform a method other than delete to lowercase', function() {
+    it('should transform a method other than delete to lowercase', function () {
       var result = transport._formatMethod('GET');
 
       expect(result).toEqual('get');
     });
 
-    it('should return del when delete is used as the method name', function() {
+    it('should return del when delete is used as the method name', function () {
       var result = transport._formatMethod('DELETE');
 
       expect(result).toEqual('del');
