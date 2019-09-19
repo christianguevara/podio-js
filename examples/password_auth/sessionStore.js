@@ -3,7 +3,7 @@ var path = require('path');
 
 function get(authType, callback) {
   var fileName = path.join(__dirname, 'tmp/' + authType + '.json');
-  var podioOAuth = fs.readFile(fileName, 'utf8', function(err, data) {
+  var podioOAuth = fs.readFile(fileName, 'utf8', function (err, data) {
 
     // Throw errors unless it's file-not-found
     if (err && err.errno !== 2) {
@@ -23,7 +23,7 @@ function set(podioOAuth, authType, callback) {
     throw new Error('Invalid authType');
   }
 
-  fs.writeFile(fileName, JSON.stringify(podioOAuth), 'utf8', function(err) {
+  fs.writeFile(fileName, JSON.stringify(podioOAuth), 'utf8', function (err) {
     if (err) {
       throw new Error('Writing in the sessionStore failed');
     }

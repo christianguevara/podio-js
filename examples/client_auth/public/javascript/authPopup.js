@@ -1,10 +1,10 @@
 /***
  * This code runs after a redirect with tokens in the hash fragment
  */
-(function(PodioJS, SessionStore, PlatformConfig) {
+(function (PodioJS, SessionStore, PlatformConfig) {
 
   var clientId = PlatformConfig.clientId;
-  var platform = new PodioJS({ authType: 'client', clientId: clientId }, { sessionStore: SessionStore });
+  var platform = new PodioJS({authType: 'client', clientId: clientId}, {sessionStore: SessionStore});
 
   // will fetch the tokens from the hash fragment
   // and store them in the sessionStore

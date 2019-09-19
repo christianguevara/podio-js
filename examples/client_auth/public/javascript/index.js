@@ -1,7 +1,10 @@
-(function(PodioJS, SessionStore, PlatformConfig, _) {
+(function (PodioJS, SessionStore, PlatformConfig, _) {
 
   var clientId = PlatformConfig.clientId;
-  var platform = new PodioJS({ authType: 'client', clientId: clientId }, { sessionStore: SessionStore, onTokenWillRefresh: onTokenWillRefresh });
+  var platform = new PodioJS({authType: 'client', clientId: clientId}, {
+    sessionStore: SessionStore,
+    onTokenWillRefresh: onTokenWillRefresh
+  });
 
   var redirectURL = window.location.href + 'auth_popup';
   var compiledSuccess = _.template('<h1>Success!</h1><p>You are now authenticated to do API calls to Platform</p><a href="#" id="request-user">Make a /user request</a>');
@@ -24,14 +27,14 @@
    */
   function onTokenWillRefresh(callback) {
     // methods are registered globally for the popup to call on this main window
-    window.onAuthCompleted = function() {
+    window.onAuthCompleted = function () {
       // the platform SDK instance from the popup has
       // received a new auth token and saved it to the store.
       // Let's retrieve it for this instance.
       platform.refreshAuthFromStore();
       callback();
     };
-    window.onAuthError = function() {
+    window.onAuthError = function () {
       elmBody.innerHTML = compiledError();
     };
 
@@ -47,8 +50,8 @@
     var elmBody = document.body;
 
     platform.isAuthenticated().catch(function (err) {
-        // methods are registered globally for the popup to call on this main window
-      window.onAuthCompleted = function() {
+      // methods are registered globally for the popup to call on this main window
+      window.onAuthCompleted = function () {
         // the platform SDK instance from the popup has
         // received a new auth token and saved it to the store.
         // Let's retrieve it for this instance.
@@ -56,7 +59,7 @@
 
         elmBody.innerHTML = compiledSuccess();
       };
-      window.onAuthError = function() {
+      window.onAuthError = function () {
         elmBody.innerHTML = compiledError();
       };
 
@@ -74,16 +77,16 @@
 
     platform.isAuthenticated().then(function () {
       platform.request('get', '/user/status')
-      .then(function(responseData) {
-        elmBody.innerHTML = compiledUser({ profile: responseData.profile });
-      });
+        .then(function (responseData) {
+          elmBody.innerHTML = compiledUser({profile: responseData.profile});
+        });
     }).catch(function () {
       elmBody.innerHTML = compiledError();
     });
   }
 
   // Use event delegation
-  window.addEventListener('click', function(e) {
+  window.addEventListener('click', function (e) {
     var id = e.target.id;
 
     e.preventDefault();
