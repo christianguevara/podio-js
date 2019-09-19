@@ -472,12 +472,6 @@ describe('auth', function () {
     it('should raise an exception if authentication failed', function () {
       var url = 'https://api.podio.com:443/oauth/token';
       var errorMessage = 'Authentication for authorization_code failed. Reason: 42';
-      var PodioAuthorizationError = function (message, status, url) {
-        this.message = message;
-        this.status = status;
-        this.url = url;
-        this.name = 'PodioAuthorizationError';
-      };
 
       var response = {
         ok: false,
@@ -486,10 +480,10 @@ describe('auth', function () {
       };
 
       var callback = sinon.stub();
-      auth._onAuthResponse(callback, 'authorization_code', url, new PodioAuthorizationError(errorMessage, 401, url), response);
+      auth._onAuthResponse(callback, 'authorization_code', url, new PodioErrors.PodioAuthorizationError(errorMessage, 401, url), response);
 
       expect(callback.calledOnce).toBe(true);
-      expect(callback.calledWithExactly(new PodioAuthorizationError(errorMessage, 401, url), void 0)).toBe(true);
+      expect(callback.calledWithExactly(new PodioErrors.PodioAuthorizationError(errorMessage, 401, url), void 0)).toBe(true);
     });
 
   });
